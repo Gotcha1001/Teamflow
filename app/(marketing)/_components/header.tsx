@@ -25,6 +25,7 @@ export const HeroHeader = () => {
   const [isScrolled, setIsScrolled] = React.useState(false);
   const { getUser, isLoading, isAuthenticated } = useKindeBrowserClient();
   const user = getUser();
+  const ORG_CODE = "org_60865f35824d";
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -121,6 +122,7 @@ export const HeroHeader = () => {
                   ) : (
                     <>
                       <LoginLink
+                        orgCode={ORG_CODE}
                         className={buttonVariants({
                           variant: "outline",
                           size: "sm",
@@ -131,6 +133,7 @@ export const HeroHeader = () => {
                       </LoginLink>
 
                       <RegisterLink
+                        orgCode={ORG_CODE}
                         className={buttonVariants({
                           size: "sm",
                           className: cn(isScrolled && "lg:hidden"),
@@ -142,6 +145,7 @@ export const HeroHeader = () => {
                         className={cn(isScrolled ? "lg:inline-flex" : "hidden")}
                       >
                         <RegisterLink
+                          orgCode={ORG_CODE}
                           className={buttonVariants({
                             size: "sm",
                           })}
