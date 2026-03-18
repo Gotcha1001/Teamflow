@@ -15,6 +15,16 @@ const nextConfig: NextConfig = {
         hostname: "avatar.vercel.sh",
         protocol: "https",
       },
+      {
+        protocol: "https",
+        hostname: "ib5nsds8qs.ufs.sh", // UploadThing UFS URL
+        pathname: "/f/**", // allow all files under /f/
+      },
+      {
+        protocol: "https",
+        hostname: "utfs.io", // the shortener domain if you use it
+        pathname: "/f/**",
+      },
     ],
   },
 };
