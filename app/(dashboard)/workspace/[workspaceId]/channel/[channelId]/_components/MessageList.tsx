@@ -79,7 +79,10 @@ export function MessageList() {
     const scrollToBottomIfNeeded = () => {
       if (isAtBottom || !hasInitialScrolled) {
         requestAnimationFrame(() => {
-          bottomRef.current?.scrollIntoView({ block: "end" });
+          bottomRef.current?.scrollIntoView({
+            block: "end",
+            behavior: "smooth",
+          });
         });
       }
     };

@@ -1,18 +1,36 @@
 import { SafeContent } from "@/components/ui/rich-text-editor/SafeContent";
-import { Message } from "@/lib/generated/prisma/client";
 import { getAvatar } from "@/lib/get-avatar";
 import Image from "next/image";
 import { MessageHoverToolbar } from "../toolbar";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { EditMessage } from "../toolbar/EditMessage";
+import { MessagelistItem } from "@/lib/types";
+import { Button } from "@/components/ui/button";
+import { MessageSquare } from "lucide-react";
+import { useThread } from "@/providers/ThreadProvider";
+import { orpc } from "@/lib/orpc";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface iAppProps {
-  message: Message;
+  message: MessagelistItem;
   currentUserId: string;
 }
 
 export function MessageItem({ message, currentUserId }: iAppProps) {
   const [isEditing, setIsEditing] = useState(false);
+  const { openThread } = useThread();
+  const queryClient = useQueryClient();
+
+  const prefetchThread = useCallback(() => {
+    const options = orpc.message.thread.list.queryOptions({
+      input: {
+        messageId: message.id,
+      },
+    });
+    queryClient
+      .prefetchQuery({ ...options, staleTime: 60_000 })
+      .catch(() => {});
+  }, [message.id, queryClient]);
 
   return (
     <div className="flex space-x-3 relative p-3 rounded-lg group hover:bg-muted/50">
@@ -51,6 +69,7 @@ export function MessageItem({ message, currentUserId }: iAppProps) {
             <SafeContent
               className="text-sm break-words prose dark:prose-invert max-w-none mark:text-primary message-content [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:list-decimal [&_ol]:pl-6"
               content={JSON.parse(message.content)}
+              // content={message.content}
             />
 
             {message.imageUrl && (
@@ -63,6 +82,24 @@ export function MessageItem({ message, currentUserId }: iAppProps) {
                   className="rounded-md  max-h-[320px] w-auto object-contain"
                 />
               </div>
+            )}
+            {message.repliesCount > 0 && (
+              <button
+                onClick={() => openThread(message.id)}
+                onMouseEnter={prefetchThread}
+                onFocus={prefetchThread}
+                type="button"
+                className="mt-1 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-border cursor-pointer"
+              >
+                <MessageSquare className="size-3.5" />
+                <span>
+                  {message.repliesCount}{" "}
+                  {message.repliesCount === 1 ? "reply" : "replies"}
+                </span>
+                <span className="opacity-0 group-hover:opacity-100 transition-opacity">
+                  View Thread
+                </span>
+              </button>
             )}
           </>
         )}
