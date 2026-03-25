@@ -6,3 +6,7 @@ viewport={{ amount: 0.3 }} >
 <Webcam />
 Welcome
 </MotionWrapperDelay>
+
+bullets showing
+
+    className="text-sm break-words prose dark:prose-invert max-w-none [&_ul]:list-disc [&_ol]:list-decimal [&_ul]:pl-6 [&_ol]:pl-6"
