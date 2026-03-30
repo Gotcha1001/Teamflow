@@ -1,15 +1,22 @@
-import arcjet, { slidingWindow } from "@/lib/arcjet";
+import arcjet, { sensitiveInfo, slidingWindow } from "@/lib/arcjet";
 import { base } from "../base";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs";
 
 const buildStardardAj = () =>
-  arcjet.withRule(
-    slidingWindow({
-      mode: "LIVE",
-      interval: "1m",
-      max: 2,
-    }),
-  );
+  arcjet
+    .withRule(
+      slidingWindow({
+        mode: "LIVE",
+        interval: "1m",
+        max: 2,
+      }),
+    )
+    .withRule(
+      sensitiveInfo({
+        mode: "LIVE",
+        deny: ["PHONE_NUMBER", "CREDIT_CARD_NUMBER"],
+      }),
+    );
 
 export const heavyWriteSecurityMiddleware = base
   .$context<{
