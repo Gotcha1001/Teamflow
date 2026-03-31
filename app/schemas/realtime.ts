@@ -1,0 +1,55 @@
+// import z from "zod";
+
+// export const UserSchema = z.object({
+//   id: z.string(),
+//   full_name: z.string().nullable(),
+//   email: z.email().nullable(),
+//   picture: z.string().nullable(),
+// });
+
+// export type User = z.infer<typeof UserSchema>;
+
+// export const PresenceMessageSchema = z.object([
+//   z.object({
+//     type: z.literal("add-user"),
+//     payload: UserSchema,
+//   }),
+//   z.object({
+//     type: z.literal("remove-user"),
+//     payload: z.object({ id: z.string() }),
+//   }),
+//   z.object({
+//     type: z.literal("presence"),
+//     payload: z.object({ users: z.array(UserSchema) }),
+//   }),
+// ]);
+
+// export type PresenceMessage = z.infer<typeof PresenceMessageSchema>;
+
+import z from "zod";
+
+export const UserSchema = z.object({
+  id: z.string(),
+  full_name: z.string().nullable(),
+  email: z.string().nullable(),
+  picture: z.string().nullable(),
+});
+
+export type User = z.infer<typeof UserSchema>;
+
+export const PresenceMessageSchema = z.discriminatedUnion("type", [
+  z.object({
+    type: z.literal("add-user"),
+    payload: UserSchema,
+  }),
+  z.object({
+    type: z.literal("remove-user"),
+    payload: z.object({ id: z.string() }),
+  }),
+  z.object({
+    type: z.literal("presence"),
+    payload: z.object({ users: z.array(UserSchema) }),
+  }),
+]);
+
+export type PresenceMessage = z.infer<typeof PresenceMessageSchema>;
