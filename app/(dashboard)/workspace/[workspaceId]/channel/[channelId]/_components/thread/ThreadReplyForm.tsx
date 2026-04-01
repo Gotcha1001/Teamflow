@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs";
 import { getAvatar } from "@/lib/get-avatar";
 import { MessagelistItem } from "@/lib/types";
+import { useChannelRealtime } from "@/providers/ChannelRealtimeProvider";
 
 interface ThreadReplyFormProps {
   threadId: string;
@@ -30,6 +31,7 @@ export function ThreadReplyForm({ threadId, user }: ThreadReplyFormProps) {
   const { channelId } = useParams<{ channelId: string }>();
   const upload = useAttachmentUpload();
   const [editorKey, setEditorKey] = useState(0);
+  const { send } = useChannelRealtime();
 
   const queryClient = useQueryClient();
 
@@ -115,6 +117,12 @@ export function ThreadReplyForm({ threadId, user }: ThreadReplyFormProps) {
         form.reset({ channelId, content: "", threadId });
         upload.clear();
         setEditorKey((k) => k + 1);
+
+        send({
+          type: "message:replies:increment",
+          payload: { messageId: threadId, delta: 1 },
+        });
+
         return toast.success("Message Created Successfully");
       },
       onError: (_err, _vars, ctx) => {
