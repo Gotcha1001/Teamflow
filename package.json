@@ -20,6 +20,7 @@
     "@orpc/server": "^1.13.6",
     "@orpc/tanstack-query": "^1.13.6",
     "@prisma/client": "^6.19.2",
+    "@prisma/nextjs-monorepo-workaround-plugin": "^7.6.0",
     "@radix-ui/react-use-controllable-state": "^1.2.2",
     "@rive-app/react-webgl2": "^4.27.3",
     "@streamdown/cjk": "^1.0.3",
