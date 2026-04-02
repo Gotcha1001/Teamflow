@@ -21,6 +21,7 @@ import { KindeUser } from "@kinde-oss/kinde-auth-nextjs";
 import { getAvatar } from "@/lib/get-avatar";
 import { MessagelistItem } from "@/lib/types";
 import { useChannelRealtime } from "@/providers/ChannelRealtimeProvider";
+import { useThreadRealtime } from "@/providers/ThreadRealtimeProvider";
 
 interface ThreadReplyFormProps {
   threadId: string;
@@ -32,6 +33,7 @@ export function ThreadReplyForm({ threadId, user }: ThreadReplyFormProps) {
   const upload = useAttachmentUpload();
   const [editorKey, setEditorKey] = useState(0);
   const { send } = useChannelRealtime();
+  const { send: sendThread } = useThreadRealtime();
 
   const queryClient = useQueryClient();
 
@@ -112,11 +114,13 @@ export function ThreadReplyForm({ threadId, user }: ThreadReplyFormProps) {
           previous,
         };
       },
-      onSuccess: (_data, _vars, ctx) => {
+      onSuccess: (data, _vars, ctx) => {
         queryClient.invalidateQueries({ queryKey: ctx.listOptions.queryKey });
         form.reset({ channelId, content: "", threadId });
         upload.clear();
         setEditorKey((k) => k + 1);
+
+        sendThread({ type: "thread:reply:created", payload: { reply: data } });
 
         send({
           type: "message:replies:increment",

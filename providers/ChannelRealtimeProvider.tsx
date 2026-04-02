@@ -28,7 +28,7 @@ export function ChannelRealtimeProvider({
 }: ChannelReatimeProviderProps) {
   const queryClient = useQueryClient();
   const socket = usePartySocket({
-    host: "https://localhost:8787",
+    host: "https://teamflow-chat-realtime.wesleyolivier443.workers.dev",
     room: `channel-${channelId}`,
     party: "chat",
     onMessage(e) {

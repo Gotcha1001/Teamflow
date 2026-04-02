@@ -1,6 +1,7 @@
 import arcjet, { sensitiveInfo, slidingWindow } from "@/lib/arcjet";
 import { base } from "../base";
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs";
+import { ArcjetNextRequest } from "@arcjet/next";
 
 const buildStardardAj = () =>
   arcjet
@@ -20,7 +21,7 @@ const buildStardardAj = () =>
 
 export const heavyWriteSecurityMiddleware = base
   .$context<{
-    request: Request;
+    request: Request | ArcjetNextRequest;
     user: KindeUser<Record<string, unknown>>;
   }>()
   .middleware(async ({ context, next, errors }) => {
